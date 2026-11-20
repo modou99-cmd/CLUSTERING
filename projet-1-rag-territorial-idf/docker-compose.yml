@@ -1,0 +1,78 @@
+# Assistant IA souverain — POC RAG territorial Île-de-France
+# 100 % local : aucun appel à une API cloud propriétaire.
+#
+#   docker compose up -d                      # Ollama + téléchargement des modèles
+#   docker compose --profile app up -d --build  # + interface Streamlit conteneurisée
+#
+# GPU NVIDIA : décommenter le bloc "deploy" du service ollama
+# (nécessite nvidia-container-toolkit).
+
+name: rag-territorial-idf
+
+services:
+  ollama:
+    image: ollama/ollama:0.40.15
+    container_name: ollama
+    restart: unless-stopped
+    # Exposé uniquement sur la boucle locale : l'API n'est pas accessible depuis le réseau.
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama          # volume persistant des modèles
+    environment:
+      - OLLAMA_KEEP_ALIVE=30m                # garde le modèle en mémoire entre deux requêtes
+      - OLLAMA_NUM_PARALLEL=2
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # Service ponctuel : télécharge les modèles open source dans le volume puis s'arrête.
+  ollama-init:
+    image: ollama/ollama:0.40.15
+    container_name: ollama-init
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        echo "Téléchargement des modèles locaux (mistral, nomic-embed-text)…"
+        ollama pull nomic-embed-text
+        ollama pull mistral
+        echo "Modèles prêts."
+    restart: "no"
+
+  # Interface Streamlit conteneurisée (optionnelle : profil "app").
+  app:
+    profiles: ["app"]
+    build: .
+    container_name: rag-idf-app
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - RGPD_SALT=${RGPD_SALT:-change-me-poc-local-salt}
+      - LOG_LEVEL=INFO
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ./data:/app/data                     # corpus et index ChromaDB persistants
+    restart: unless-stopped
+
+volumes:
+  ollama_models:
+    name: rag_idf_ollama_models
