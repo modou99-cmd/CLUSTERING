@@ -78,8 +78,9 @@ noms de personnes (civilités, prénoms courants, formules « je m'appelle », s
 
 ## Aperçu de l'interface
 
-> Captures réalisées avec un serveur Ollama **simulé** : la réponse affichée (« Réponse simulée… ») ne provient
-> pas de Mistral. Le filtre RGPD, la recherche dans ChromaDB et l'affichage des sources sont réels.
+> Captures réalisées avec les vrais modèles `mistral` et `nomic-embed-text` (Ollama 0.40.15, processeur seul,
+> environ 70 s par réponse). La réponse affichée est brute : elle illustre aussi les limites d'un modèle 7B
+> (mesures en partie reformulées hors des extraits) — d'où l'affichage systématique des extraits sources.
 
 | Assistant | Indexation | Filtre RGPD |
 |---|---|---|

@@ -54,6 +54,8 @@ Réponds en respectant strictement les règles, avec les citations [Source : fic
 
 NO_ANSWER = "Les documents indexés ne permettent pas de répondre à cette question."
 CITATION_RE = re.compile(r"\[Source\s*:\s*[^\]]+?-\s*Page\s*\d+\s*\]", re.IGNORECASE)
+ANY_CITATION_RE = re.compile(r"\s*\[Source\s*:(?P<body>[^\]]*)\]", re.IGNORECASE)
+CITATION_PARTS_RE = re.compile(r"^\s*(?P<src>.+?)\s*-\s*Page\s*(?P<page>\d+)\s*$", re.IGNORECASE)
 
 
 class SourceChunk(BaseModel):
@@ -157,8 +159,23 @@ class RAGEngine:
         )
 
     @staticmethod
-    def _enforce_citations(answer: str, chunks: list[SourceChunk]) -> str:
-        """Garantit la présence de citations vérifiables dans la réponse."""
+    def _drop_unverified_citations(answer: str, chunks: list[SourceChunk]) -> str:
+        """Supprime toute citation qui ne correspond pas à un extrait réellement retrouvé."""
+        allowed = {(c.source.lower(), c.page) for c in chunks}
+
+        def check(m: re.Match[str]) -> str:
+            parts = CITATION_PARTS_RE.match(m.group("body"))
+            if parts and (parts["src"].lower(), int(parts["page"])) in allowed:
+                return m.group(0)
+            logger.warning("Citation non vérifiable retirée de la réponse du modèle.")
+            return ""
+
+        return ANY_CITATION_RE.sub(check, answer).strip()
+
+    @classmethod
+    def _enforce_citations(cls, answer: str, chunks: list[SourceChunk]) -> str:
+        """Garantit que la réponse ne contient que des citations vérifiables."""
+        answer = cls._drop_unverified_citations(answer, chunks)
         if NO_ANSWER.lower() in answer.lower() or CITATION_RE.search(answer):
             return answer
         cites = list(dict.fromkeys(c.citation for c in chunks))
