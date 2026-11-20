@@ -76,6 +76,17 @@ noms de personnes (civilités, prénoms courants, formules « je m'appelle », s
 
 ---
 
+## Aperçu de l'interface
+
+> Captures réalisées avec un serveur Ollama **simulé** : la réponse affichée (« Réponse simulée… ») ne provient
+> pas de Mistral. Le filtre RGPD, la recherche dans ChromaDB et l'affichage des sources sont réels.
+
+| Assistant | Indexation | Filtre RGPD |
+|---|---|---|
+| ![Assistant](docs/captures/1_assistant.png) | ![Indexation](docs/captures/2_indexation.png) | ![Filtre RGPD](docs/captures/3_filtre_rgpd.png) |
+
+---
+
 ## 3. Arborescence
 
 ```
