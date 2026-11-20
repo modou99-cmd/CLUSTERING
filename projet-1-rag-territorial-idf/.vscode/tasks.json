@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Démarrer Ollama (Docker) + télécharger les modèles",
+      "type": "shell",
+      "command": "docker compose up -d && docker compose logs -f ollama-init",
+      "problemMatcher": []
+    },
+    {
+      "label": "2. Installer les dépendances Python",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} -m pip install -r requirements.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "3. Indexer les documents",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} -m src.ingest",
+      "problemMatcher": []
+    },
+    {
+      "label": "4. Lancer l'application",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} -m streamlit run app.py",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Tests",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} -m pytest -q",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

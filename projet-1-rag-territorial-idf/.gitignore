@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.env
+# Données : corpus et index locaux (potentiellement sensibles) non versionnés
+data/docs/*
+!data/docs/.gitkeep
+data/chroma_db/*
+!data/chroma_db/.gitkeep

@@ -1,0 +1,26 @@
+# Assistant IA souverain — dépendances 100 % open source (Python 3.11+)
+
+# Interface
+streamlit>=1.46,<2
+
+# Base vectorielle locale persistante
+chromadb>=0.5.5
+
+# Orchestration RAG
+langchain-community>=0.3
+langchain-text-splitters>=0.3
+
+# Lecture PDF
+pypdf>=4.3
+
+# Appels HTTP vers Ollama (local)
+requests>=2.32
+
+# Modèles de données typés / validation
+pydantic>=2.7
+
+# Génération des PDF de démonstration
+reportlab>=4.2
+
+# Qualité
+pytest>=8.0

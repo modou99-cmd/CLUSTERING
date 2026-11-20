@@ -1,0 +1,9 @@
+[project]
+name = "rag-territorial-idf"
+version = "1.0.0"
+description = "Assistant IA souverain & gouvernance documentaire - POC RAG territorial Ile-de-France"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
