@@ -121,6 +121,19 @@ projet-1-rag-territorial-idf/
 **Prérequis** : Docker + Docker Compose v2, Python 3.11 ou plus, ~8 Go de RAM libres (Mistral 7B quantifié ≈ 4,1 Go,
 nomic-embed-text ≈ 0,3 Go). Un GPU NVIDIA est facultatif (voir le bloc `deploy` commenté dans `docker-compose.yml`).
 
+### 4.0 Avec VS Code (le plus simple)
+
+1. Installer [VS Code](https://code.visualstudio.com/), [Python 3.11+](https://www.python.org/downloads/) et
+   [Docker Desktop](https://www.docker.com/products/docker-desktop/) ; lancer Docker Desktop.
+2. Récupérer le code (`git clone …`), puis dans VS Code : **Fichier → Ouvrir le dossier…** →
+   `projet-1-rag-territorial-idf`. Accepter les extensions recommandées (Python, Docker).
+3. `Ctrl+Maj+P` → **Python: Create Environment** → **Venv** → cocher `requirements.txt`.
+4. Copier `.env.example` en `.env`.
+5. `Ctrl+Maj+P` → **Tasks: Run Task** → **1. Démarrer Ollama (Docker) + télécharger les modèles**
+   (une seule fois, ~4,5 Go), puis **3. Indexer les documents**.
+6. Onglet **Exécuter et déboguer** (`Ctrl+Maj+D`) → **▶ Lancer l'application (Streamlit)** → `F5`.
+   Le navigateur s'ouvre sur **http://localhost:8501**.
+
 ### 4.1 Démarrer Ollama et télécharger les modèles
 
 ```bash
